@@ -20,6 +20,8 @@ set(BIN_NAME "[name of compiled executable here]")
 # set the project name
 project(${PROJ_NAME} LANGUAGES CXX)
 
+# TODO: Add shared libraries required by the project here
+
 # include GNUInstallDirs
 include(GNUInstallDirs)
 
@@ -31,10 +33,8 @@ file(GLOB_RECURSE ALL_SRCS ${CMAKE_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE LIB_SRCS ${CMAKE_SOURCE_DIR}/src/*.cpp)
 list(REMOVE_ITEM LIB_SRCS ${CMAKE_SOURCE_DIR}/src/main.cpp)
 
-# 
 
 # set the build targets
-add_library(${BIN_NAME}_test STATIC ${LIB_SRCS})
 add_executable(${BIN_NAME} ${ALL_SRCS})
 
 # add the install target for the library
@@ -42,6 +42,8 @@ install(TARGETS ${BIN_NAME}
 	DESTINATION $ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin)
 
 # load GoogleTest
+if(${LIB_SRCS})
+add_library(${BIN_NAME}_test STATIC ${LIB_SRCS})
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
 	RESULT_VARIABLE result
@@ -81,10 +83,12 @@ file(GLOB TESTS ${CMAKE_SOURCE_DIR}/tests/main.cpp)
 # create the test executable
 add_executable(runTests ${TESTS})
 
-# link it with gtest and orion
+# link it with gtest and the binary sources
 target_link_libraries(runTests gtest ${BIN_NAME}_test)
 
 # and add the test to ctest
 add_test(NAME EngineTests COMMAND runTests)
+
+endif()
 
 # end of file

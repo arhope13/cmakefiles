@@ -20,6 +20,8 @@ set(LIB_NAME "[name of compiled library here]")
 # set the project name
 project(${PROJ_NAME} LANGUAGES CXX)
 
+# TODO: add shared libraries required by the project here
+
 # include GNUInstallDirs
 include(GNUInstallDirs)
 
@@ -85,7 +87,7 @@ file(GLOB TESTS ${CMAKE_SOURCE_DIR}/tests/main.cpp)
 # create the test executable
 add_executable(runTests ${TESTS})
 
-# link it with gtest and orion
+# link it with gtest and the project library
 target_link_libraries(runTests gtest ${LIB_NAME})
 
 # and add the test to ctest
